@@ -5,38 +5,7 @@ import simbad.sim.*;
 
 class MyEnv extends EnvironmentDescription {
 
-    static public class MyMovRobot extends Agent {   //动态障碍机器人
-
-        RangeSensorBelt sonars,bumpers;
-        LampActuator lamp;
-        double speed = 0.4;
-
-        MyMovRobot(Vector3d position, String name) {
-            super(position,name);
-            bumpers = RobotFactory.addBumperBeltSensor(this);
-            sonars = RobotFactory.addSonarBeltSensor(this,24);
-            lamp = RobotFactory.addLamp(this);
-        }
-
-        public void initBehavior() {
-            setTranslationalVelocity(speed);
-        }
-
-        public void performBehavior() {
-            if (bumpers.oneHasHit()) {
-                lamp.setBlink(true);
-            }else
-                lamp.setBlink(false);
-
-            if(getCounter()%80 == 0){
-                speed = -speed;
-                setTranslationalVelocity(speed);
-            }
-        }
-    }
-
     MyEnv(int column, int row, int[][] map, int startX, int startY, int endX, int endY) {
-     
   	    
     	long startTime=System.currentTimeMillis();//获取开始时间
         AStarAlgorithm aStar=new AStarAlgorithm(map, row, column);
@@ -77,7 +46,7 @@ class MyEnv extends EnvironmentDescription {
         		}
         	}
 
-        add(new MyMovRobot(new Vector3d(-3.5, 0, 0), "MyMovRobot")); //移动障碍机器人
+        add(new ObstacleRobot(new Vector3d(-3.5, 0, 0), "MyMovRobot")); //移动障碍机器人
         add(new Robot(new Vector3d(startY-row/2, 0, startX-column/2), "robot 1",column,row,map,endX,endY));
     }
 }

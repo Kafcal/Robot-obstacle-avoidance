@@ -15,7 +15,6 @@ public class PotentialFieldMain extends Demo
 
     private static final double repelConstant = 210.0;// 斥力系数
     private static final double attractConstant = 30.0;// 引力系数
-    private boolean debug = false;// 调试标记
 
     public class Robot extends Agent
     {
@@ -111,7 +110,7 @@ public class PotentialFieldMain extends Demo
 
         }
 
-        private Vector2d transform(Vector2d v, Vector2d point)
+        private Vector2d decomposition(Vector2d v, Vector2d point)  //把力分解到x轴和z轴
         {
             Vector2d global = new Vector2d(1, 0); //向量（1,0）
             double alfa = getAngle(global, v); //向量V与X夹角
@@ -124,10 +123,9 @@ public class PotentialFieldMain extends Demo
             double y = point.y * k2;
 
             return new Vector2d(x, y);
-
         }
 
-        private double repelForce(double distance, double range) //计算斥力
+        private double repelForce(double distance, double range) //计算斥力大小
         {
             double force = 0;
             Point3d p = new Point3d();
@@ -186,21 +184,13 @@ public class PotentialFieldMain extends Demo
                 composition.setX(vf0.x + vf1.x + vf2.x);
                 composition.setY(vf0.y + vf1.y + vf2.y);
 
-                if (debug)
-                    System.out.println("(" + composition.x + ","
-                            + composition.y);
-
-                Vector2d repelForceVector = transform(direct, composition);
+                Vector2d repelForceVector = decomposition(direct, composition);
 
                 Vector2d toGoal = new Vector2d((goal.x - pos.x),
                         (goal.y - pos.y));
                 double disGoal = toGoal.length();
-                if (debug)
-                    System.out.println("distance to goal:" + disGoal);
                 double goalForce = attractForce(disGoal);
 
-                if (debug)
-                    System.out.println("attract force from goal:" + goalForce);
                 Vector2d goalForceVector = new Vector2d(
                         (goalForce * toGoal.x / disGoal),
                         (goalForce * toGoal.y / disGoal));
@@ -209,19 +199,8 @@ public class PotentialFieldMain extends Demo
                 double y = repelForceVector.y + goalForceVector.y;
 
                 Vector2d allForces = new Vector2d(x, y);
-                if (debug)
-                {
-                    System.out.println("total force(" + allForces.x + ","
-                            + allForces.y + ")");
-                    System.out.println("force direct(" + direct.x + ","
-                            + direct.y + ")");
-                }
 
                 double angle = getAngle(direct, allForces);
-
-
-                if (debug)
-                    System.out.println("angle:" + angle);
 
                 // 判断转动方向
                 if (angle < Math.PI)
@@ -277,37 +256,7 @@ public class PotentialFieldMain extends Demo
         }
     }
 
-    static public class MyMovRobot extends Agent{
-
-        RangeSensorBelt sonars,bumpers;
-        LampActuator lamp;
-        double speed = 0.4;
-
-        MyMovRobot(Vector3d position, String name) {
-            super(position,name);
-            bumpers = RobotFactory.addBumperBeltSensor(this);
-            sonars = RobotFactory.addSonarBeltSensor(this,24);
-            lamp = RobotFactory.addLamp(this);
-        }
-
-        public void initBehavior() {
-            setTranslationalVelocity(speed);
-        }
-
-        public void performBehavior() {
-            if (bumpers.oneHasHit()) {
-                lamp.setBlink(true);
-            }else
-                lamp.setBlink(false);
-
-            if(getCounter()%80 == 0){
-                speed = -speed;
-                setTranslationalVelocity(speed);
-            }
-        }
-    }
-
-    public PotentialFieldMain()
+    private PotentialFieldMain()
     {
         int column = 20, row = 20;
         int[][] map = {
@@ -332,28 +281,28 @@ public class PotentialFieldMain extends Demo
                 {1,1,1,1,1,1,1,1,1,1,3,3,1,1,1,0,1,1,1,1},
                 {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,3,1,1,1,1}};
 
-        Wall w1 = new Wall(new Vector3d(column/2+1, 0, 0), column+1, 1, this);
+        Wall w1 = new Wall(new Vector3d((column >> 1) +1, 0, 0), column+1, 1, this);
         w1.rotate90(1);
         add(w1);
-        Wall w2 = new Wall(new Vector3d(-column/2-1, 0, 0), column+1, 1, this);
+        Wall w2 = new Wall(new Vector3d((-column >> 1) -1, 0, 0), column+1, 1, this);
         w2.rotate90(1);
         add(w2);
-        Wall w3 = new Wall(new Vector3d(0, 0, row/2+1), row+1, 1, this);
+        Wall w3 = new Wall(new Vector3d(0, 0, (row >> 1) +1), row+1, 1, this);
         add(w3);
-        Wall w4 = new Wall(new Vector3d(0, 0, -row/2-1), row+1, 1, this);
+        Wall w4 = new Wall(new Vector3d(0, 0, (-row >> 1) -1), row+1, 1, this);
         add(w4);
-        Box b = null;
+        Box b;
         //添加障碍物
         for(int i=0;i<row;i++)
             for(int j=0;j<column;j++){
                 if(map[i][j]==0){
-                    b = new Box(new Vector3d(j-column/2, 0, i-row/2), new Vector3f(1, 1, 1),
+                    b = new Box(new Vector3d(j- (column >> 1), 0, i- (row >> 1)), new Vector3f(1, 1, 1),
                             this);
                     add(b);
                 }
             }
 
-        add(new MyMovRobot(new Vector3d(-3.5, 0, 0), "MyMovRobot"));
+        add(new ObstacleRobot(new Vector3d(-3.5, 0, 0), "MyMovRobot"));
         add(new Robot(new Vector3d(-10, 0, -10), "My Robot"));
     }
 
