@@ -1,11 +1,8 @@
-
-
 import javax.vecmath.Point3d;
 import javax.vecmath.Vector3d;
 
 import simbad.sim.Agent;
 import simbad.sim.LampActuator;
-import simbad.sim.RangeSensorBelt;
 import simbad.sim.RobotFactory;
 
 public class Robot extends Agent {
@@ -18,7 +15,9 @@ public class Robot extends Agent {
 	private int column;
 	private Vector3d p;   //初始位置
     private int direction = 1;  //移动方向  ,八个方向
-    LampActuator lamp; 	
+    private LampActuator lamp;
+
+    private static boolean hasArrived = false;
     
     public Robot(Vector3d position, String name,int column, int row,int[][] map,int eX,int eY) {
         super(position, name);
@@ -31,9 +30,7 @@ public class Robot extends Agent {
         p = position;
         this.eX = eX;
         this.eY = eY;
-        lamp = RobotFactory.addLamp(this); 
-        
-        
+        lamp = RobotFactory.addLamp(this);
     }
 
     //初始化
@@ -54,155 +51,19 @@ public class Robot extends Agent {
             System.out.println();
         }
     }
-    public boolean check(int x,int y){
+
+    private boolean check(int x, int y){
     	Point3d p= new Point3d();
     	getCoords(p);
     	double px= p.z+10;
     	double py= p.x+10;
-    	
-    	if(Math.abs(px-x)<=0.001&&Math.abs(py-y)<=0.001){
-    		return true;
-    		
-    	}
-    	else{
-    		return false;
-    	}
+
+		return !(Math.abs(px - x) <= 0.001) || !(Math.abs(py - y) <= 0.001);
     }
 
     
     public void performBehavior() {
-    	double angle = 0;
-    	
-//		if (getCounter() % 20 == 0){
-//        	
-//			if(x==eX && y==eY){
-//	    		setRotationalVelocity(0);
-//	    		setTranslationalVelocity(0);
-//	    		lamp.setOn(true);
-//				return;
-//			}
-//    		System.out.println(x+" "+y);
-//    		//向右移动一个单位
-//        	if(x<column-1 && map[y][x+1]==-1){
-//        		angle = getRotationalAngle(1);
-//        		if(angle==0){
-//        			//平移
-//        			map[y][x]=2;
-//	        		x++;
-//	        		setRotationalVelocity(0);
-//	        		setTranslationalVelocity(1);
-//        		}else{
-//        			//转动指定角度
-//	        		setTranslationalVelocity(0);
-//	        		setRotationalVelocity(angle);
-//	        	}
-//        		return;
-//        	}
-//        	//向左移动一个单位
-//        	if(x>0 && map[y][x-1]==-1){
-//        		angle = getRotationalAngle(5);
-//        		if(angle==0){
-//        			map[y][x]=2;
-//	        		x--;
-//	        		setRotationalVelocity(0);
-//	        		setTranslationalVelocity(1);
-//        		}else{
-//	        		setTranslationalVelocity(0);
-//	        		setRotationalVelocity(angle);
-//	        	}
-//        		return;
-//        	}
-//        	//向上移动一个单位
-//        	if(y>0 && map[y-1][x]==-1){
-//        		angle = getRotationalAngle(3);
-//        		if(angle==0){
-//        			map[y][x]=2;
-//	        		y--;
-//	        		setRotationalVelocity(0);
-//	        		setTranslationalVelocity(1);
-//        		}else{
-//	        		setTranslationalVelocity(0);
-//	        		setRotationalVelocity(angle);
-//	        	}
-//        		return;
-//        	}
-//        	//向下移动一个单位
-//        	if(y<row-1 && map[y+1][x]==-1){
-//        		angle = getRotationalAngle(7);
-//        		if(angle==0){
-//        			map[y][x]=2;
-//	        		y++;
-//	        		setRotationalVelocity(0);
-//	        		setTranslationalVelocity(1);
-//        		}else{
-//	        		setTranslationalVelocity(0);
-//	        		setRotationalVelocity(angle);
-//	        	}
-//        		return;
-//        	}
-//        	
-//        	
-//        	//右下
-//        	if(x<column-1&&y<row-1 && map[y+1][x+1]==-1){
-//        		angle = getRotationalAngle(8);
-//        		if(angle==0){
-//        			map[y][x]=2;
-//	        		x++;
-//	        		y++;
-//	        		setRotationalVelocity(0);
-//	        		setTranslationalVelocity(Math.sqrt(2.0));
-//        		}else{
-//	        		setTranslationalVelocity(0);
-//	        		setRotationalVelocity(angle);
-//	        	}
-//        		return;
-//        	}
-//        	//左下
-//        	if(x>0&&y<row-1 && map[y+1][x-1]==-1){
-//        		angle = getRotationalAngle(6);
-//        		if(angle==0){
-//        			map[y][x]=2;
-//	        		x--;
-//	        		y++;
-//	        		setRotationalVelocity(0);
-//	        		setTranslationalVelocity(Math.sqrt(2.0));
-//        		}else{
-//	        		setTranslationalVelocity(0);
-//	        		setRotationalVelocity(angle);
-//	        	}
-//        		return;
-//        	}
-//        	
-//          	//左上
-//        	if(x>0&&y>0 && map[y-1][x-1]==-1){
-//        		angle = getRotationalAngle(4);
-//        		if(angle==0){
-//        			map[y][x]=2;
-//	        		x--;
-//	        		y--;
-//	        		setRotationalVelocity(0);
-//	        		setTranslationalVelocity(Math.sqrt(2.0));
-//        		}else{
-//	        		setTranslationalVelocity(0);
-//	        		setRotationalVelocity(angle);
-//	        	}
-//        		return;
-//        	}
-//        	//右上
-//        	if(x<column-1&&y>0 && map[y-1][x+1]==-1){
-//        		angle = getRotationalAngle(2);
-//        		if(angle==0){
-//        			map[y][x]=2;
-//	        		x++;
-//	        		y--;
-//	        		setRotationalVelocity(0);
-//	        		setTranslationalVelocity(Math.sqrt(2.0));
-//        		}else{
-//	        		setTranslationalVelocity(0);
-//	        		setRotationalVelocity(angle);
-//	        	}
-//        		return;
-//        	}
+    	double angle;
         	
     	if (getCounter() % 20 == 0){
 			Point3d p= new Point3d();
@@ -211,21 +72,24 @@ public class Robot extends Agent {
 			double py=p.x+10.0;
 			
 			
-			if(Math.abs(px-eX)<=0.00001 && Math.abs(py-eY)<=0.00001){
+			if(Math.abs(px-eX)<=0.00001 && Math.abs(py-eY)<=0.00001){  // 到达目的地
 				lamp.setOn(true);
 	    		setRotationalVelocity(0);
 	    		setTranslationalVelocity(0);
-	    		System.out.println((p.z+10)+" "+(p.x+10)+ "    "+y+ " "+x);
+	    		if (!hasArrived){
+					System.out.println("A星算法Robot成功到达目的地了！");
+					System.out.println("用时:"+getLifeTime()+"s");
+					System.out.println("运动距离:"+getOdometer()+"m");
+					hasArrived = true;
+				}
 				return;
 			}
 			lamp.setOn(false);
-			
-			
-    		//System.out.println((p.z+10)+" "+(p.x+10)+ "    "+y+ " "+x);
+
     		//向右移动一个单位
         	if(y<column-1 && map[x][y+1]==-1){	
         		angle = getRotationalAngle(1);
-        		if(!check(x,y+1)){
+        		if(check(x, y + 1)){
 	        		if(angle==0){
 	        			//平移
 		        		setRotationalVelocity(0);
@@ -248,7 +112,7 @@ public class Robot extends Agent {
         	//向左移动一个单位
         	if(y>0 && map[x][y-1]==-1){
         		angle = getRotationalAngle(5);
-        		if(!check(x,y-1)){
+        		if(check(x, y - 1)){
 	        		if(angle==0){
 	        			//平移
 	        			
@@ -272,11 +136,9 @@ public class Robot extends Agent {
         	//向上移动一个单位
         	if(x>0 && map[x-1][y]==-1){
         		angle = getRotationalAngle(3);
-        		if(!check(x-1,y)){
+        		if(check(x - 1, y)){
 	        		if(angle==0){
 	        			//平移
-	        			
-		        		
 		        		setRotationalVelocity(0);
 		        		setTranslationalVelocity(1);
 		        		
@@ -296,7 +158,7 @@ public class Robot extends Agent {
         	//向下移动一个单位
         	if(x<row-1 && map[x+1][y]==-1){
         		angle = getRotationalAngle(7);
-        		if(!check(x+1,y)){
+        		if(check(x + 1, y)){
 	        		if(angle==0){
 	        			//平移
 		        		setRotationalVelocity(0);
@@ -321,7 +183,7 @@ public class Robot extends Agent {
         	//右下
         	if(y<column-1&&x<row-1 && map[x+1][y+1]==-1){
         		angle = getRotationalAngle(8);
-        		if(!check(x+1,y+1)){
+        		if(check(x + 1, y + 1)){
 	        		if(angle==0){
 	        			//平移
 		        		setRotationalVelocity(0);
@@ -345,7 +207,7 @@ public class Robot extends Agent {
         	//左下
         	if(y>0&&x<row-1 && map[x+1][y-1]==-1){
         		angle = getRotationalAngle(6);
-        		if(!check(x+1,y-1)){
+        		if(check(x + 1, y - 1)){
 	        		if(angle==0){
 	        			//平移
 		        		setRotationalVelocity(0);
@@ -369,7 +231,7 @@ public class Robot extends Agent {
           	//左上
         	if(x>0&&y>0 && map[x-1][y-1]==-1){
         		angle = getRotationalAngle(4);
-        		if(!check(x-1,y-1)){
+        		if(check(x - 1, y - 1)){
 	        		if(angle==0){
 	        			//平移
 		        		setRotationalVelocity(0);
@@ -392,7 +254,7 @@ public class Robot extends Agent {
         	//右上
         	if(y<column-1&&x>0 && map[x-1][y+1]==-1){
         		angle = getRotationalAngle(2);
-        		if(!check(x-1,y+1)){
+        		if(check(x - 1, y + 1)){
 	        		if(angle==0){
 	        			//平移
 		        		setRotationalVelocity(0);
@@ -403,8 +265,7 @@ public class Robot extends Agent {
 		        		setTranslationalVelocity(0);
 		        		setRotationalVelocity(angle);
 		        	}
-	        		return;
-        		}
+				}
         		else{
         			setTranslationalVelocity(0);
         			map[x][y]=2;

@@ -218,7 +218,7 @@ public class PotentialFieldMain extends Demo
                     setRotationalVelocity(0);
                     lamp.setOn(true);
                     if (!hasArrived){
-                        System.out.println("Robot成功到达目的地了！");
+                        System.out.println("势场法Robot成功到达目的地了！");
                         System.out.println("用时:"+getLifeTime()+"s");
                         System.out.println("运动距离:"+getOdometer()+"m");
                         hasArrived = true;

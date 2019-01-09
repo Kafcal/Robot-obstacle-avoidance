@@ -25,28 +25,28 @@ class MyEnv extends EnvironmentDescription {
     	System.out.println("程序运行时间： "+(endTime-startTime)+"ms");	
     	
 	       light1IsOn = true;
-    	Wall w1 = new Wall(new Vector3d(column/2+1, 0, 0), column+1, 1, this);
+    	Wall w1 = new Wall(new Vector3d((column >> 1) +1, 0, 0), column+1, 1, this);
         w1.rotate90(1);
         add(w1);
-        Wall w2 = new Wall(new Vector3d(-column/2-1, 0, 0), column+1, 1, this);
+        Wall w2 = new Wall(new Vector3d((-column >> 1) -1, 0, 0), column+1, 1, this);
         w2.rotate90(1);
         add(w2);
-        Wall w3 = new Wall(new Vector3d(0, 0, row/2+1), row+1, 1, this);
+        Wall w3 = new Wall(new Vector3d(0, 0, (row >> 1) +1), row+1, 1, this);
         add(w3);
-        Wall w4 = new Wall(new Vector3d(0, 0, -row/2-1), row+1, 1, this);
+        Wall w4 = new Wall(new Vector3d(0, 0, (-row >> 1) -1), row+1, 1, this);
         add(w4);
-        Box b = null;
+        Box b;
         //添加障碍物
         for(int i=0;i<row;i++)
         	for(int j=0;j<column;j++){
         		if(map[i][j]==0){
-                    b = new Box(new Vector3d(j-column/2, 0, i-row/2), new Vector3f(1, 1, 1),
+                    b = new Box(new Vector3d(j- (column >> 1), 0, i- (row >> 1)), new Vector3f(1, 1, 1),
                             this);
                     add(b);
         		}
         	}
 
         add(new ObstacleRobot(new Vector3d(-3.5, 0, 0), "MyMovRobot")); //移动障碍机器人
-        add(new Robot(new Vector3d(startY-row/2, 0, startX-column/2), "robot 1",column,row,map,endX,endY));
+        add(new Robot(new Vector3d(startY- (row >> 1), 0, startX- (column >> 1)), "robot 1",column,row,map,endX,endY));
     }
 }

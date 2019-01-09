@@ -3,7 +3,7 @@
 import java.util.Comparator;
 
 
-class NodeFComparator implements Comparator<Node>{
+class NodeFComparator implements Comparator<Node>{  // 比较节点F值大小
 
   @Override
   public int compare(Node o1, Node o2) {

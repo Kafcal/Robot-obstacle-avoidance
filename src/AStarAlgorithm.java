@@ -10,7 +10,7 @@ class AStarAlgorithm {
     private int row;//行
     private int column;//列
     
-    public AStarAlgorithm (int[][] map,int row,int column){
+    AStarAlgorithm(int[][] map, int row, int column){
         this.map=map;
         this.row=row;
         this.column=column;
@@ -19,22 +19,22 @@ class AStarAlgorithm {
     }
     
     //查找路径 
-    public int search(int x1,int y1,int x2,int y2){
-        if(x1<0||x1>=column||x2<0||x2>=column||y1<0||y1>=row||y2<0||y2>=row){
+    int search(int x1, int y1, int x2, int y2){
+        if(x1<0||x1>=column||x2<0||x2>=column||y1<0||y1>=row||y2<0||y2>=row){   // 超出地图范围
             return -1;
         }
-        if(map[x1][y1]==0||map[x2][y2]==0){
-            return -1;				//地图错误
+        if(map[x1][y1]==0||map[x2][y2]==0){     //地图错误
+            return -1;
         }
-        Node sNode=new Node(x1,y1,null);
-        Node eNode=new Node(x2,y2,null);
+        Node sNode=new Node(x1,y1,null); // 起点
+        Node eNode=new Node(x2,y2,null); // 终点
         openList.add(sNode);
         List<Node> resultList=search(sNode, eNode);
-        if(resultList.size()==0){
-            return 0;        //没有找到路径
+        if(resultList.size()==0){   //没有找到路径
+            return 0;
         }
         for(Node node:resultList){
-            map[node.getX()][node.getY()]=-1;
+            map[node.getX()][node.getY()]=-1;  // 路径上的点
         }
         System.out.println("路径长度:"+resultList.size());
         return 1;					//找到坐标
@@ -89,10 +89,10 @@ class AStarAlgorithm {
             }
 //            
             //从openlist中删除，加入到closelist中
-            
             closeList.add(openList.remove(0));
+
             //排序，
-            Collections.sort(openList, new NodeFComparator());
+            openList.sort(new NodeFComparator());
         }
         if(isFind){
             getPath(resultList, node);
@@ -113,10 +113,9 @@ class AStarAlgorithm {
             return false;
         }
         //查看是否在在openlist中
-        int index=-1;
+        int index;
         if((index=isListContains(openList, x, y))!=-1){
-            //更新G值ֵ
-            if((parentNode.getG()+cost)<openList.get(index).getG()){
+            if((parentNode.getG()+cost)<openList.get(index).getG()){  // 找到更好的路径更新G值ֵ
                 node.setParentNode(parentNode);
                 countG(node, eNode, cost);
                 countF(node);
