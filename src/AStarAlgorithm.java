@@ -6,7 +6,6 @@ class AStarAlgorithm {
     private int[][] map; //获取静态地图
     private List<Node> openList; //Open列表
     private List<Node> closeList; //Close列表
-    private final int COST_STRAIGHT = 10; //路径评分
     private int row;//行
     private int column;//列
     
@@ -16,28 +15,6 @@ class AStarAlgorithm {
         this.column=column;
         openList=new ArrayList<Node>();
         closeList=new ArrayList<Node>();
-    }
-    
-    //查找路径 
-    int search(int x1, int y1, int x2, int y2){
-        if(x1<0||x1>=column||x2<0||x2>=column||y1<0||y1>=row||y2<0||y2>=row){   // 超出地图范围
-            return -1;
-        }
-        if(map[x1][y1]==0||map[x2][y2]==0){     //地图错误
-            return -1;
-        }
-        Node sNode=new Node(x1,y1,null); // 起点
-        Node eNode=new Node(x2,y2,null); // 终点
-        openList.add(sNode);
-        List<Node> resultList=search(sNode, eNode);
-        if(resultList.size()==0){   //没有找到路径
-            return 0;
-        }
-        for(Node node:resultList){
-            map[node.getX()][node.getY()]=-1;  // 路径上的点
-        }
-        System.out.println("路径长度:"+resultList.size());
-        return 1;					//找到坐标
     }
     
     //节点查找，核心算法
@@ -54,6 +31,8 @@ class AStarAlgorithm {
                 break;
             }
             //查找上一个
+            //路径评分
+            int COST_STRAIGHT = 10;
             if((node.getY()-1)>=0){
                 checkPath(node.getX(),node.getY()-1,node, eNode, COST_STRAIGHT);
             }
@@ -128,6 +107,28 @@ class AStarAlgorithm {
             openList.add(node);
         }
         return true;
+    }
+
+
+    //查找路径
+    int search(int x1, int y1, int x2, int y2){
+        if(x1<0||x1>=column||x2<0||x2>=column||y1<0||y1>=row||y2<0||y2>=row){   // 超出地图范围
+            return -1;
+        }
+        if(map[x1][y1]==0||map[x2][y2]==0){     //地图错误
+            return -1;
+        }
+        Node sNode=new Node(x1,y1,null); // 起点
+        Node eNode=new Node(x2,y2,null); // 终点
+        openList.add(sNode);
+        List<Node> resultList=search(sNode, eNode);
+        if(resultList.size()==0){   //没有找到路径
+            return 0;
+        }
+        for(Node node:resultList){
+            map[node.getX()][node.getY()]=-1;  // 路径上的点
+        }
+        return 1;					//找到坐标
     }
     
     //判断列表中是否包含某个节点

@@ -35,21 +35,9 @@ public class Robot extends Agent {
 
     //初始化
     public void initBehavior() {
-     
         x = (int)p.z+column/2;
         y = (int)p.x+row/2; 
     	direction=1;
-    	//还原路径
-    	
-        for(int i=0;i<row;i++){
-            for(int j=0;j<column;j++){                       
-            	if(map[i][j]==2){
-            		map[i][j]=-1;   
-            	}
-                System.out.print(map[i][j]);  
-            }
-            System.out.println();
-        }
     }
 
     private boolean check(int x, int y){

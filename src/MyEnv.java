@@ -6,25 +6,15 @@ import simbad.sim.*;
 class MyEnv extends EnvironmentDescription {
 
     MyEnv(int column, int row, int[][] map, int startX, int startY, int endX, int endY) {
-  	    
-    	long startTime=System.currentTimeMillis();//获取开始时间
         AStarAlgorithm aStar=new AStarAlgorithm(map, row, column);
-        int flag=aStar.search(startX, startY, endX, endY);
+        int flag=aStar.search(startX, startY, endX, endY);        // 调用A星算法查找路径
         if(flag==-1){
             System.out.println("传输数据有误！");
         }else if(flag==0){
             System.out.println("没找到！");
         }
-        for(int i=0;i<row;i++){
-            for(int j=0;j<column;j++){
-                    System.out.print(map[i][j]);   
-            }
-            System.out.println();
-        }
-    	long endTime=System.currentTimeMillis(); //获取结束时间
-    	System.out.println("程序运行时间： "+(endTime-startTime)+"ms");	
     	
-	       light1IsOn = true;
+        light1IsOn = true;
     	Wall w1 = new Wall(new Vector3d((column >> 1) +1, 0, 0), column+1, 1, this);
         w1.rotate90(1);
         add(w1);
